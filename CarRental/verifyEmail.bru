@@ -1,0 +1,19 @@
+meta {
+  name: verifyEmail
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://localhost:8090/v2/auth/verify?token=57c0d733-d896-4c4a-b15b-ec6757517e37
+  body: none
+  auth: inherit
+}
+
+params:query {
+  token: 57c0d733-d896-4c4a-b15b-ec6757517e37
+}
+
+settings {
+  encodeUrl: true
+}

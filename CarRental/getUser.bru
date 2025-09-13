@@ -1,0 +1,25 @@
+meta {
+  name: getUser
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:8090/v2/auth/user
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+}
+
+body:json {
+  {
+    "username": "user1"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

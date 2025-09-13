@@ -1,0 +1,28 @@
+meta {
+  name: registerUser
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8090/v2/auth/register
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "user1",
+    "password": "password123",
+    "email": "joshishrikant812@gmail.com",
+    "mobile": "9021774040"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

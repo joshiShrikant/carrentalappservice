@@ -1,0 +1,26 @@
+meta {
+  name: addCar
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8090/v2/cars
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+}
+
+body:json {
+  {
+    "model": "Aura",
+    "brand": "Hyndai"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

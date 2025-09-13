@@ -1,0 +1,37 @@
+meta {
+  name: loginUser
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8090/v2/auth/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "user1",
+    "password": "password123"
+  }
+}
+
+tests {
+  // Assume the response body is the token itself
+  let token = res.body;
+  
+  // Save it as a collection variable
+  bru.setVar("authToken", token);
+  
+  
+  // bru.setVar("authToken", jsonResponse.access_token);
+}
+
+settings {
+  encodeUrl: true
+}

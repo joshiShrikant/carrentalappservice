@@ -1,0 +1,19 @@
+meta {
+  name: getCar
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8090/v2/cars/5
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+}
+
+settings {
+  encodeUrl: true
+}

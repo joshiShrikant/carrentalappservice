@@ -1,0 +1,26 @@
+meta {
+  name: updateUser
+  type: http
+  seq: 10
+}
+
+put {
+  url: http://localhost:8090/v2/auth/update
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+}
+
+body:json {
+  {
+    "username": "user1234",
+    "email": "myEmail@gmail.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
