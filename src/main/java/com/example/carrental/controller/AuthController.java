@@ -1,5 +1,7 @@
 package com.example.carrental.controller;
 
+import com.example.carrental.dto.JwtResponse;
+import com.example.carrental.dto.LoginRequestDto;
 import com.example.carrental.dto.UpdateUserDto;
 import com.example.carrental.dto.UserDto;
 import com.example.carrental.entity.User;
@@ -10,11 +12,12 @@ import com.example.carrental.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("v2/auth")
+@RequestMapping("api/v2/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -31,6 +34,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody UserDto userDto) {
+        if(userDto.getUsername() == null || userDto.getUsername().isEmpty()) {
+            return ResponseEntity.badRequest().body("Username cannot be empty");
+        }
+        if(userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            return ResponseEntity.badRequest().body("Password cannot be empty");
+        }
+        if(userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+            return ResponseEntity.badRequest().body("Email cannot be empty");
+        }
+
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
@@ -40,6 +53,7 @@ public class AuthController {
         user.setLastName(userDto.getLastName());
         user.setAddress(userDto.getAddress());
         user.setAvatar(userDto.getAvatar());
+        user.setPassword(userDto.getPassword());
         user.setEnabled(false); // User is inactive until email is verified
 
         userService.registerUser(user);
@@ -47,13 +61,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto userDto) {
         User user = userService.authenticate(userDto.getUsername(), userDto.getPassword());
+        user.setPassword("");
         if (user != null) {
             String token = JwtUtil.generateToken(user.getUsername());
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(new JwtResponse(user.getUsername(), token, "Bearer", user));
         }
-        return ResponseEntity.status(401).body("Invalid credentials");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 
     @GetMapping("/user")

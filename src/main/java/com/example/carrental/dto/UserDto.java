@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserDto {
     private Long id;
     private String username;

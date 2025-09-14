@@ -16,8 +16,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v2/auth/**","/v2/actuator", "/v2/actuator/**").permitAll() // Allow /auth/** without authentication
-                        .requestMatchers("/v2/cars/**").authenticated()
+                        .requestMatchers("/api/v2/auth/**","/api/v2/actuator", "/api/v2/actuator/**").permitAll() // Allow /auth/** without authentication
+                        .requestMatchers("/api/v2/cars/**").authenticated()
                         .anyRequest().authenticated() // Secure other endpoints
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
