@@ -34,10 +34,26 @@ public class AdminDashboardController {
                 Map.of("id", 102, "name", "Customer User", "role", "CUSTOMER")
         );
 
+        // Dummy bookingHistory and users data userId and carId will come from car and user table
+        List<Map<String, Object>> bookingHistory = List.of(
+                Map.of("id", 1, "carId", 10,  "status", "completed"),
+                Map.of("id", 2, "carId", 10,  "status", "completed"),
+                Map.of("id", 3, "carId", 30, "status", "completed")
+        );
+        List<Map<String, Object>> activeBookings = List.of(
+                Map.of("id", 1, "carId", 10,  "status", "active"),
+                Map.of("id", 2, "carId", 20,  "status", "active"),
+                Map.of("id", 3, "carId", 30,  "status", "active"),
+                Map.of("id", 4, "carId", 30,  "status", "active")
+        );
+
+
         return Map.of(
                 "cars", cars,
                 "bookings", bookings,
-                "users", users
+                "users", users,
+                "bookingHistory" , bookingHistory,
+                "activeBookings" , activeBookings
         );
     }
 }

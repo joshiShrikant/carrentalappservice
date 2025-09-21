@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("api/v2/auth")
 public class AuthController {
@@ -126,6 +128,21 @@ public class AuthController {
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired token.");
         }
+    }
+
+    @PutMapping("/updateProfile")
+    public ResponseEntity<?> updateProfile(@RequestHeader("Authorization") String token,
+                                        @RequestBody UpdateUserDto updateUserDto) {
+
+        String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+        User updatedUser = userService.updateUser(username, updateUserDto);
+
+        Map<String, Object> response = Map.of(
+                "status", 200,
+                "msg", "Profile updated successfully!",
+                "user", updatedUser
+        );
+        return ResponseEntity.ok(response);
     }
 
 
