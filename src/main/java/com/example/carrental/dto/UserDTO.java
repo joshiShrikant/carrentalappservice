@@ -1,15 +1,17 @@
 package com.example.carrental.dto;
 
-import com.example.carrental.entity.Role;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class UserDto {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class UserDTO {
     private Long id;
     private String username;
     private String password;
@@ -20,6 +22,6 @@ public class UserDto {
     private String address;
     private String avatar;
     private boolean enabled;
-    private Set<Role> roles;
+    private Set<String> roles;
     private LocalDateTime createdAt;
 }

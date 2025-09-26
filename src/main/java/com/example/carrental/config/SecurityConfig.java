@@ -16,12 +16,19 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v2/auth/**","/api/v2/actuator", "/api/v2/actuator/**").permitAll() // Allow /auth/** without authentication
-                        .requestMatchers("/api/v2/cars/**").authenticated()
+                        .requestMatchers(
+                                "/api/v2/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/actuator/**"
+                        ).permitAll()
+                        // Allow /auth/** without authentication
+                        .requestMatchers("/api/v2/cars/**", "/api/v2/users/**").authenticated()
                         .anyRequest().authenticated() // Secure other endpoints
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .formLogin(form -> form.disable()); // Disable default login page
+                .formLogin(AbstractHttpConfigurer::disable); // Disable default login page
 
         return http.build();
     }

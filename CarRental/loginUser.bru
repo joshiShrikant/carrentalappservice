@@ -16,20 +16,18 @@ headers {
 
 body:json {
   {
-    "username": "Shrikantj1",
-    "password": "Pune@123"
+    "username": "user1",
+    "password": "password123"
   }
 }
 
 tests {
   // Assume the response body is the token itself
-  let token = res.body;
+  let response = res.body;
   
   // Save it as a collection variable
-  bru.setVar("authToken", token);
+  bru.setVar("authToken", response.token);
   
-  
-  // bru.setVar("authToken", jsonResponse.access_token);
 }
 
 settings {

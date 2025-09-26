@@ -3,7 +3,7 @@ package com.example.carrental.controller;
 import com.example.carrental.dto.JwtResponse;
 import com.example.carrental.dto.LoginRequestDto;
 import com.example.carrental.dto.UpdateUserDto;
-import com.example.carrental.dto.UserDto;
+import com.example.carrental.dto.UserDTO;
 import com.example.carrental.entity.User;
 import com.example.carrental.mapper.UserMapper;
 import com.example.carrental.repository.UserRepository;
@@ -15,11 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("api/v2/auth")
+@Tag(name = "Auth", description = "Auth management APIs")
 public class AuthController {
 
     private final UserService userService;
@@ -35,14 +38,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody UserDto userDto) {
-        if(userDto.getUsername() == null || userDto.getUsername().isEmpty()) {
+    @Operation(summary = "register User", description = "register a User on app")
+    public ResponseEntity<String> register(@Valid @RequestBody UserDTO userDto) {
+        if (userDto.getUsername() == null || userDto.getUsername().isEmpty()) {
             return ResponseEntity.badRequest().body("Username cannot be empty");
         }
-        if(userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
             return ResponseEntity.badRequest().body("Password cannot be empty");
         }
-        if(userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
             return ResponseEntity.badRequest().body("Email cannot be empty");
         }
 
@@ -63,6 +67,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "login User", description = "login a User on app")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto userDto) {
         User user = userService.authenticate(userDto.getUsername(), userDto.getPassword());
         user.setPassword("");
@@ -74,6 +79,7 @@ public class AuthController {
     }
 
     @GetMapping("/user")
+    @Operation(summary = "get User", description = "get a User on app")
     public ResponseEntity<?> getUser(HttpServletRequest request) {
         try {
             // Extract token from Authorization header
@@ -88,10 +94,9 @@ public class AuthController {
             String username = jwtUtil.extractUsername(token);
 
             // Lookup user in database
-            User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
             // Map to DTO to avoid exposing password
-            UserDto userDto = UserMapper.toDto(user);
+            UserDTO userDto = UserMapper.toDto(user);
             return ResponseEntity.ok(userDto);
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Invalid token: " + e.getMessage());
@@ -100,8 +105,8 @@ public class AuthController {
 
     // ----------------- Update User -----------------
     @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String token,
-                                        @RequestBody UpdateUserDto updateUserDto) {
+    @Operation(summary = "update User", description = "update a User on app")
+    public ResponseEntity<?> updateUser(@RequestHeader("Authorization") String token, @RequestBody UpdateUserDto updateUserDto) {
 
         String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
         User updatedUser = userService.updateUser(username, updateUserDto);
@@ -111,6 +116,7 @@ public class AuthController {
 
     // ----------------- Delete User -----------------
     @DeleteMapping("/delete")
+    @Operation(summary = "delete User", description = "delete a User on app")
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String token) {
 
         String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
@@ -120,6 +126,7 @@ public class AuthController {
     }
 
     @GetMapping("/verify")
+    @Operation(summary = "verify Email", description = "verify a User on app")
     public ResponseEntity<String> verifyEmail(@RequestParam("token") String token) {
         boolean verified = userService.verifyEmail(token);
 
@@ -131,19 +138,14 @@ public class AuthController {
     }
 
     @PutMapping("/updateProfile")
-    public ResponseEntity<?> updateProfile(@RequestHeader("Authorization") String token,
-                                        @RequestBody UpdateUserDto updateUserDto) {
+    @Operation(summary = "update Profile", description = "update a Profile on app")
+    public ResponseEntity<?> updateProfile(@RequestHeader("Authorization") String token, @RequestBody UpdateUserDto updateUserDto) {
 
         String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
         User updatedUser = userService.updateUser(username, updateUserDto);
 
-        Map<String, Object> response = Map.of(
-                "status", 200,
-                "msg", "Profile updated successfully!",
-                "user", updatedUser
-        );
+        Map<String, Object> response = Map.of("status", 200, "msg", "Profile updated successfully!", "user", updatedUser);
         return ResponseEntity.ok(response);
     }
-
 
 }

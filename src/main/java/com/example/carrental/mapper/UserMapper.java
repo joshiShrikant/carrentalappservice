@@ -1,27 +1,43 @@
 package com.example.carrental.mapper;
 
-import com.example.carrental.dto.UserDto;
+import com.example.carrental.dto.UserDTO;
+import com.example.carrental.entity.Role;
 import com.example.carrental.entity.User;
+
+import java.util.stream.Collectors;
 
 public class UserMapper {
 
-    public static UserDto toDto(User user) {
-            UserDto dto = new UserDto();
-            dto.setId(user.getId());
-            dto.setUsername(user.getUsername());
-            dto.setEmail(user.getEmail());
-            dto.setFirstName(user.getFirstName());
-            dto.setLastName(user.getLastName());
-            dto.setAddress(user.getAddress());
-            dto.setAvatar(user.getAvatar());
-            dto.setEnabled(user.isEnabled());
-            dto.setRoles(user.getRoles());
-            dto.setCreatedAt(user.getCreatedAt());
-            return dto;
+    public static UserDTO toDto(User user) {
+        if (user == null) {
+            return null;
         }
 
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setAddress(user.getAddress());
+        dto.setAvatar(user.getAvatar());
+        dto.setEnabled(user.isEnabled());
+        dto.setCreatedAt(user.getCreatedAt());
+
+        // ✅ Convert Set<Role> → Set<String>
+        if (user.getRoles() != null) {
+            dto.setRoles(
+                    user.getRoles().stream()
+                            .map(Role::getName)   // assume Role has getName()
+                            .collect(Collectors.toSet())
+            );
+        }
+
+        return dto;
+    }
+
         // New method to map from UserDto to User
-        public static User toEntity(UserDto userDto) {
+        public static User toEntity(UserDTO userDto) {
             User user = new User();
             user.setUsername(userDto.getUsername());
             user.setPassword(userDto.getPassword());

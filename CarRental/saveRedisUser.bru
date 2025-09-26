@@ -1,22 +1,22 @@
 meta {
-  name: registerUser
+  name: saveRedisUser
   type: http
-  seq: 2
+  seq: 14
 }
 
 post {
-  url: http://localhost:8090/api/v2/auth/register
+  url: http://localhost:8090/api/v2/users
   body: json
   auth: inherit
 }
 
 headers {
-  Content-Type: application/json
+  Authorization: Bearer {{authToken}}
 }
 
 body:json {
   {
-    "username": "user1",
+    "username": "user14",
     "password": "password123",
     "email": "joshishrikant812@gmail.com",
     "mobile": "9021774040"
