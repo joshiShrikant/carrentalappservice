@@ -18,12 +18,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v2/auth/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/actuator/**"
-                        ).permitAll()
-                        // Allow /auth/** without authentication
+                                "/v3/api-docs/**",        // ✅ allow OpenAPI JSON + config
+                                "/api-docs/**",          // ✅ matches your springdoc.api-docs.path
+                                "/swagger-ui/**",         // ✅ allow UI assets
+                                "/swagger-ui.html",       // ✅ redirect
+                                "/actuator/**"            // ✅ health/metrics
+                        ).permitAll() // Allow /auth/** without authentication
                         .requestMatchers("/api/v2/cars/**", "/api/v2/users/**").authenticated()
                         .anyRequest().authenticated() // Secure other endpoints
                 )
